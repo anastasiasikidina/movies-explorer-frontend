@@ -1,0 +1,134 @@
+.search-form {
+  padding: 70px 0;
+  margin: 0 70px;
+  display: flex;
+  flex-direction: row;
+  background: #FFFFFF;
+  align-items: center;
+  border-bottom: 1px solid #E8E8E8;
+}
+
+.search-form__container {
+  width: 100%;
+  background: transparent;
+  border-radius: 50px;
+  border: 1px solid #A0A0A0;
+}
+
+.search-form__wrapper {
+  padding: 7px;
+  height: 48px;
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.search-form__field {
+  max-width: 900px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.search-form__icon {
+  background: url('./../../images/search.svg') no-repeat;
+  width: 34px;
+  height: 34px;
+  background-position: center;
+}
+
+.search-form__input {
+  border: none;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 20px;
+}
+
+.search-form__button {
+  border: none;
+  box-sizing: border-box;
+  outline: none;
+  cursor: pointer;
+  background: url('./../../images/find.svg') no-repeat #3456F3;
+  background-size: 22px 22px;
+  width: 34px;
+  height: 34px;
+  background-position: center;
+  border-radius: 48px;
+  padding: 0;
+}
+
+.search-form__checkbox-wrapper {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  max-width: 210px;
+  width: 100%;
+}
+
+.search-form__error {
+  margin: -12px 0 0 60px;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  color: #ee3465;
+}
+
+@media screen and (max-width: 1024px) {
+  .search-form {
+    margin: 0 45px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .search-form {
+    padding: 60px;
+    margin: 0 30px;
+    flex-direction: column;
+    gap: 38px;
+  }
+
+  .search-form__input {
+    font-size: 14px;
+    line-height: 18px;
+    padding: 8px 0 8px 11px;
+  }
+}
+
+@media screen and (max-width: 645px) {
+  .search-form {
+    margin: 0 20px;
+  }
+
+  .search-form__icon {
+    display: none;
+  }
+
+  .search-form__wrapper {
+  
+    align-items: center;
+  }
+
+}
+
+@media screen and (max-width: 540px) {
+  .search-form {
+    margin: 0 10px;
+    padding: 60px 0 118px;
+    gap: 44px;
+  }
+
+  .search-form__input {
+    font-size: 11px;
+    line-height: 18px;
+    padding: 0;
+  }
+
+}
