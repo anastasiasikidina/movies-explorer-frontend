@@ -1,6 +1,7 @@
 .search-form {
+  max-width: 1140px;
   padding: 70px 0;
-  margin: 0 70px;
+  margin: 0 auto;
   display: flex;
   flex-direction: row;
   background: #FFFFFF;
@@ -10,14 +11,12 @@
 
 .search-form__container {
   width: 100%;
-  background: transparent;
-  border-radius: 50px;
-  border: 1px solid #A0A0A0;
+  background: #F9F9F9;
+  border-radius: 9px;
 }
 
 .search-form__wrapper {
-  padding: 7px;
-  height: 48px;
+  padding: 25px 19px;
   box-sizing: border-box;
   width: 100%;
   display: flex;
@@ -26,6 +25,8 @@
 }
 
 .search-form__field {
+  margin: 0 0 0 10px;
+  padding: 0 19px 0 0;
   max-width: 900px;
   width: 100%;
   display: flex;
@@ -54,8 +55,7 @@
   box-sizing: border-box;
   outline: none;
   cursor: pointer;
-  background: url('./../../images/find.svg') no-repeat #3456F3;
-  background-size: 22px 22px;
+  background: url('./../../images/find.svg');
   width: 34px;
   height: 34px;
   background-position: center;
@@ -71,6 +71,7 @@
   justify-content: flex-end;
   max-width: 210px;
   width: 100%;
+  border-left: 1px solid #CBCBCB;
 }
 
 .search-form__error {
@@ -89,16 +90,8 @@
 
 @media screen and (max-width: 768px) {
   .search-form {
-    padding: 60px;
+    padding: 80px 0 109px;
     margin: 0 30px;
-    flex-direction: column;
-    gap: 38px;
-  }
-
-  .search-form__input {
-    font-size: 14px;
-    line-height: 18px;
-    padding: 8px 0 8px 11px;
   }
 }
 
@@ -112,23 +105,26 @@
   }
 
   .search-form__wrapper {
-  
+    padding: 19px;
+    flex-direction: column;
     align-items: center;
   }
 
+  .search-form__checkbox-wrapper {
+    margin: 65px 0 0;
+    position: absolute;
+    top: 205px;
+    border-left: none;
+  }
 }
 
 @media screen and (max-width: 540px) {
   .search-form {
     margin: 0 10px;
-    padding: 60px 0 118px;
-    gap: 44px;
   }
 
   .search-form__input {
-    font-size: 11px;
-    line-height: 18px;
-    padding: 0;
+    font-size: 14px;
+    line-height: 20px;
   }
-
 }

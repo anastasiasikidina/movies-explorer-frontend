@@ -24,7 +24,8 @@
 }
 
 .navigation__login-element {
-  color: #ffffff;
+  color: #000000;
+  ;
   font-weight: 500;
   font-size: 12px;
   line-height: 16px;
@@ -64,9 +65,9 @@
 
 .navigation__films {
   margin: 0;
-  margin-right: 50px;
-  gap: 20px;
-  margin-left: auto;
+  margin-right: auto;
+  margin-left: 44px;
+  gap: 16px;
   padding: 0;
   display: flex;
   flex-direction: row;
@@ -95,8 +96,9 @@
 }
 
 .navigation__profile-edit {
-  padding: 9.5px 3px 9.5px 11px;
-  background: #FFFFFF;
+  background: #F9F9F9;
+  border-radius: 20px;
+  padding: 8px 20px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -109,19 +111,6 @@
 .navigation__profile-edit:hover {
   opacity: 0.6;
   cursor: pointer;
-}
-
-.navigation__profile-icon-wrapper {
-  margin: 0 0 0 5px;
-  padding: 5px;
-  background: #F9F9F9;
-  border-radius: 50px;
-}
-
-.navigation__profile-icon {
-  background: url("../../images/account-icon.svg") no-repeat;
-  min-width: 12px;
-  min-height: 12px;
 }
 
 .navigation__profile-text {

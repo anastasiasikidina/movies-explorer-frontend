@@ -1,5 +1,6 @@
 .footer {
-  margin: 80px 70px 20px 70px;
+  padding: 80px 70px 20px 70px;
+  background: #FAFAFA;
 }
 
 .footer_enabled {
@@ -66,11 +67,13 @@
 
 @media screen and (max-width: 767px) {
   .footer {
+    padding: 0;
     margin: 80px 30px 20px 30px;
+    background: #ffffff;
   }
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: 400px) {
   .footer {
     margin: 0;
   }
@@ -91,9 +94,15 @@
     align-content: center;
     margin: 30px 0;
   }
+
+  .footer__nav-item {
+    margin: 0;
+  }
   .footer__link {
     font-size: 12px;
     line-height: 15px;
+    margin: 0;
+    text-align: center;
   }
 
   .footer__text {

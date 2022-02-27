@@ -1,9 +1,9 @@
 .navtab {
   max-width: 100%;
   min-height: 66px;
-  background-color: #000000;
-  margin: 0;
-}
+  background-color: #F5F5F5;
+  margin: 0 40px;
+  border-radius: 0 0 10px 10px;}
 
 .navtab__list {
   margin: 0;
@@ -11,12 +11,16 @@
   flex-direction: row;
   align-content: center;
   justify-content: center;
-  gap: 40px;
+  gap: 10px;
   padding: 0;
 }
 
 .navtab__list-item {
-  padding: 24px 0;
+  display: flex;
+  margin: 0;
+  padding: 10px 17px;
+  background: #E8E8E8;
+  border-radius: 10px;
 }
 
 .navtab__link {
@@ -24,8 +28,8 @@
   font-size: 13px;
   line-height: 16px;
   margin: 0;
-  text-decoration: underline;
-  color: #ffffff;
+  text-decoration: none;
+  color: #000000;
   opacity: 1;
   transition: opacity .2s ease-in;
 }
