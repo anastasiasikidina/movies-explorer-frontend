@@ -42,14 +42,20 @@
 @media screen and (max-width: 450px) {
   .navtab {
     min-height: 66px;
+    margin: 0 14px;
   }
 
   .navtab__list {
-    gap: 24px;
-    padding: 0;
+    gap: 6px;
+    padding: 0 16px;
+  }
+
+  .navtab__list-item {
+    padding: 6px 20px;
   }
 
   .navtab__link {
-    font-size: 11px;
+    font-size: 10px;
+    line-height: 16px;
   }
 }

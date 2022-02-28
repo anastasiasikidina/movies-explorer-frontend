@@ -14,7 +14,7 @@
 
 .register__input-container {
   display: block;
-  width: 396px;
+  max-width: 396px;
 }
 
 .register__input-container:last-of-type {
@@ -33,14 +33,12 @@
 .register__input {
   margin: 10px 0 20px 0;  
   border: none;
-  border-radius: 8px;
-  background-color: #f4f4f4;
   width: 100%;
-  font-family: "Inter", "Serif", sans-serif;
   font-size: 13px;
   line-height: 1.25;
-  padding: 15px 15px;
+  padding: 10px 15px;
   box-sizing: border-box;
+  border-bottom: 1px solid #E8E8E8;
   transition: background-color 0.25s;
 }
 
@@ -65,7 +63,7 @@
 .register__button {
   width: 396px;
   height: 45px;
-  background: #3456f3;
+  background: #2BE080;
   border-radius: 3px;
   border: none;
   padding: 0;
@@ -94,7 +92,6 @@
     gap: 6px;
 }
 .register__text {
-    font-family: 'Inter', 'Serif', sans-serif;
     font-size: 14px;
     line-height: 17px;
     text-align: center;
@@ -103,7 +100,7 @@
   }
   
   .register__link {
-    color: #3456F3;
+    color: #2BE080;
     text-decoration: none;
     transition: opacity .7s ease-in;
   }
@@ -126,7 +123,7 @@
   }
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: 450px) {
   .profile {
     padding: 70px 30px 40px;
   }
@@ -143,5 +140,22 @@
 
   .profile__button_exit {
     margin: 0 auto;
+  }
+
+  .register {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 56px 30px 30px;
+  }
+
+  .register__button {
+    width: 260px;
+    margin-top: 157px;
+
+  }
+
+  .register__title {
+    margin: 50px 0 80px;
   }
 }

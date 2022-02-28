@@ -48,6 +48,12 @@
   font-weight: normal;
   font-size: 18px;
   line-height: 20px;
+  width: 100%;
+}
+
+.search-form__input:focus {
+  background-color: #f0f0f0;
+  outline: none;
 }
 
 .search-form__button {
@@ -61,6 +67,11 @@
   background-position: center;
   border-radius: 48px;
   padding: 0;
+  transition: opacity .7s ease-in;
+}
+
+.search-form__button:hover {
+  opacity: 0.6;
 }
 
 .search-form__checkbox-wrapper {

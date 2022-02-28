@@ -47,4 +47,15 @@
     width: 300px;
    }
 
+   @media screen and (max-width: 450px) {
+      .promo__title {
+        font-size: 29px;
+        line-height: 37px;
+      }
+
+      .promo {
+        margin: 0 14px;
+      }
+   }
+
 }

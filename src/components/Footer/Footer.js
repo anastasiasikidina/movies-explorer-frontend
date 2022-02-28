@@ -7,7 +7,7 @@ function Footer() {
   const isSavedMovies = useRouteMatch({ path: "/saved-movies" });
   const footerEnabled = isMain || isMovies || isSavedMovies;
   return (
-    <section className={`footer ${footerEnabled ? "footer_enabled" : ""}`}>
+    <footer className={`footer ${footerEnabled ? "footer_enabled" : ""}`}>
       <h3 className="footer__title">
         Учебный проект Яндекс.Практикум х BeatFilm.
       </h3>
@@ -46,7 +46,7 @@ function Footer() {
           </li>
         </ul>
       </div>
-    </section>
+    </footer>
   );
 }
 
