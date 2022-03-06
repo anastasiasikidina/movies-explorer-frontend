@@ -1,57 +1,71 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import Logo from "../../images/logo-header.svg";
+import AuthForm from "../AuthForm/AuthForm";
+import useFormValidator from "../../hooks/formValidation";
+import { regex } from "../../utils/constants";
 
-function Login() {
-  const loginPage = true;
+function Register({ onSubmit, isPreloaderShowing }) {
+  const useFormValidation = useFormValidator();
+  const { email, password } = useFormValidation.values;
+  const { values, errors, isFormValid, resetForm } = useFormValidation;
 
-  const history = useHistory();
+  React.useEffect(() => {
+    resetForm();
+  }, [resetForm]);
 
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    history.push("/movies");
-  }
+    onSubmit({ email, password });
+  };
+
   return (
-    <section className="register" onSubmit={handleSubmit}>
-      <Link to={"/"}>
-        <img src={Logo} alt="логотип" className="navigation__logo" />
-      </Link>
-      <h2 className="register__title">Рады видеть!</h2>
-      <div className="register__input-container">
-        <label className="register__label">E-mail</label>
-        <input
-          className="register__input"
-          id="userEmail"
-          type="email"
-          placeholder="pochta@yandex.ru"
-          minLength="2"
-          maxLength="30"
-          required
-        />
-        <label className="register__label">Пароль</label>
-        <input
-          className="register__input"
-          id="password"
-          type="password"
-          placeholder="введите пароль"
-          minLength="2"
-          maxLength="22"
-          required
-        />
-        <span className="register__span-input-error"></span>
-      </div>
-      <button className={`register__button ${loginPage ? "register__button_login" : ""}`} type="submit">
-        Войти
-      </button>
-      <div className="register__wrapper">
-        <p className="register__text">Ещё не зарегистрированы?</p>
-        <Link to="/signup" className="register__link">
-          Регистрация
-        </Link>
-      </div>
-    </section>
+    <AuthForm
+      onSubmit={handleSubmit}
+      title="Рады видеть!"
+      buttonText="Войти"
+      text="Ещё не зарегистрированы?"
+      linkPath="/signup"
+      linkText="Регистрация"
+      loginPage="true"
+      isFormValid={isFormValid}
+      isPreloaderShowing={isPreloaderShowing}
+    >
+      <label className="auth-form__label" htmlFor="email">
+        E-mail
+      </label>
+      <input
+        className={`auth-form__input ${
+          errors.email ? "auth-form__input_type_error" : ""
+        }`}
+        type="email"
+        name="email"
+        id="email"
+        placeholder="email@yandex.ru"
+        pattern={regex.email}
+        value={values.email || ""}
+        onChange={useFormValidation.handleChange}
+        required
+      />
+      <span className="auth-form__span-input-error">{errors.email}</span>
+      <label className="auth-form__label" htmlFor="password">
+        Пароль
+      </label>
+      <input
+        className={`auth-form__input ${
+          errors.password ? "auth-form__input_type_error" : ""
+        }`}
+        type="password"
+        name="password"
+        id="password"
+        minLength="5"
+        maxLength="22"
+        placeholder="введите пароль"
+        value={values.password || ""}
+        onChange={useFormValidation.handleChange}
+        required
+      />
+      <span className="auth-form__span-input-error">{errors.password}</span>
+    </AuthForm>
   );
 }
 
-export default Login;
+export default Register;

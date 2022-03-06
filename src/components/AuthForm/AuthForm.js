@@ -1,21 +1,24 @@
-/*import React from "react";
-import Logo from "../../images/logo-header.svg";
+import React from "react";
+import { Link } from "react-router-dom";
+import logo from "../../images/logo-header.svg";
 
-function AuthForm(
-  title,
+function AuthForm({
   children,
+  title,
   buttonText,
   text,
   linkText,
+  linkPath,
   onSubmit,
+  isFormValid,
+  isPreloaderShowing,
   loginPage,
-  linkPath
-) {
+}) {
   return (
     <div className="auth-form">
-      <a href="/" className="auth-form__logo-link">
-        <img src={Logo} alt="логотип" className="auth-form__logo-image" />
-      </a>
+      <Link to="/" className="auth-form__logo-link">
+        <img src={logo} alt="логотип" className="auth-form__logo-image" />
+      </Link>
       <form className="auth-form__form" noValidate onSubmit={onSubmit}>
         <div className="auth-form__wrapper">
           <h2 className="auth-form__title">{title}</h2>
@@ -25,16 +28,17 @@ function AuthForm(
           <button
             className={`auth-form__button ${
               loginPage ? "auth-form__button_login" : ""
-            }`}
+            } ${!isFormValid && "auth-form__button_disabled"}`}
             type="submit"
+            disabled={!isFormValid && !isPreloaderShowing}
           >
             {buttonText}
           </button>
           <p className="auth-form__text">
-            {`${text} `}
-            <a className="auth-form__link" href={linkPath}>
+            {text}
+            <Link className="auth-form__link" to={linkPath}>
               {linkText}
-            </a>
+            </Link>
           </p>
         </div>
       </form>
@@ -42,4 +46,4 @@ function AuthForm(
   );
 }
 
-export default AuthForm;*/
+export default AuthForm;
