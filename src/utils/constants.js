@@ -29,3 +29,4 @@ export const SHORT_MOVIES_NOT_FOUND = "Короткометражных филь
 export const NO_MOVIES_WITH_LAST_QUERY = "По последнему запросу ничего не найдено.";
 
 export const SERVER_IMAGE_URL = "https://api.nomoreparties.co";
+export const BASE_MOVIES_URL = 'https://api.nomoreparties.co';

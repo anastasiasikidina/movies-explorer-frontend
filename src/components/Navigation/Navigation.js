@@ -65,17 +65,6 @@ function Navigation({ place, isLogedIn }) {
           <button className="navigation__button">Войти</button>
         </Link>
       </div>
-      <Link
-        to="/profile"
-        className={`navigation__profile-edit navigation__profile-edit_place_header ${
-          !isLogedIn ? "navigation__profile-edit_hidden" : ""
-        }`}
-      >
-        <span className="navigation__profile-text">Аккаунт</span>
-        <div className="navigation__profile-icon-wrapper">
-          <div className="navigation__profile-icon" />
-        </div>
-      </Link>
       <button
         className={`navigation__burger-button ${
           isMobileMenuOpen || !isLogedIn

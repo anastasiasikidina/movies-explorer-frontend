@@ -1,4 +1,5 @@
 .movies-card-list {
+  font-family: "Inter", Arial, sans-serif;
   list-style: none;
   width: 100%;
   max-width: 1280px;

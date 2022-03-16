@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Route, Switch, useRouteMatch, useHistory, useLocation } from "react-router-dom";
-import { EXIST_FOOTER_FOR_PAGE, SERVER_IMAGE_URL, SHORT_DURATION, YOU_SUCCESS_REGISTER,
+import { EXIST_FOOTER_FOR_PAGE, SERVER_IMAGE_URL, SHORT_DURATION,// YOU_SUCCESS_REGISTER,
   NEW_CURRENTUSER_DATA_SUCCESS } from "../../utils/constants";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
 import mainApi from "../../utils/MainApi";
@@ -20,70 +20,85 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute"
 function App() {
 
   const [currentUser, setCurrentUser] = useState({});
-  const [isLogedIn, setIsLogedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    JSON.parse(localStorage.getItem('userData')) || null
+  );
+
   const [isSuccessMessageShowing, setIsSuccessMessageShowing] = useState(false);
   const [isPreloaderShowing, setIsPreloaderShowing] = useState(false);
   const [downloadedMovies, setDownloadedMovies] = useState([]);
   const [isMoviesShort, setIsMoviesShort] = useState(false);
-  const [savedMovies, setSavedMovies] = useState([]);
-
+  const [savedMovies, setSavedMovies] = useState(
+    JSON.parse(localStorage.getItem('allMovies')) || null
+  );
+  
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [isResponseSuccessful, setIsResponseSuccessful] = useState();
   const [infoTooltipMessage, setInfoTooltipMessage] = useState("");
+  const [email, setEmail] = useState("");
 
   const history = useHistory();
   const location = useLocation();
-
-  function handleRegister({ email, password, name }) {
-    clearInfoTooltip();
-    setIsPreloaderShowing(true);
-    mainApi.register({ email: email.toLowerCase(), password, name })
-      .then(() => {
-        setIsResponseSuccessful(true);
-        setIsInfoTooltipOpen(true);
-        setInfoTooltipMessage(YOU_SUCCESS_REGISTER);
-        handleLogin({ email, password });
-      })
-      .catch((err) => {
-        setIsResponseSuccessful(false);
-        setIsInfoTooltipOpen(true);
-        console.log(err);
-      })
-      .finally(() => {
-        setIsSuccessMessageShowing(true);
-        setIsPreloaderShowing(false);
-      })
-  }
-
-  function handleLogin({ email, password }) {
-    setIsPreloaderShowing(true);
-    mainApi.authorize({ email, password })
-      .then(() => {
-        setIsLogedIn(true);
-        getCurrentUser();
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setIsPreloaderShowing(false);
-      })
-  }
-
-  function handleLogout() {
-    setIsPreloaderShowing(true);
-    mainApi.logout()
-      .then(() => {
-        setIsLogedIn(false);
+  
+  function handleCheckToken() {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      mainApi
+        .checkToken(jwt)
+        .then((res) => {
+          setIsLoggedIn(true);
+          setEmail(res.data.email);
           history.push("/");
-          localStorage.clear();
         })
+        .catch((err) => {
+          if (err.status === 401) {
+            console.log("401 — Токен не передан или передан не в том формате");
+          }
+          console.log("401 — Переданный токен некорректен");
+        });
+    }
+  }
+
+  function  handleRegister(email, password) {
+    mainApi
+      .register(email, password)
+      .then((res) => {
+        setIsInfoTooltipOpen(true);
+        setIsResponseSuccessful(true);
+        history.push("/sign-in");
+      })
       .catch((err) => {
-        console.log(err);
+        if (err.status === 400) {
+          console.log("Некорректно заполнено одно из полей ");
+        }
+        setIsInfoTooltipOpen(true);
+        setIsResponseSuccessful(false);
+      });
+  }
+
+  function handleLogin(email, password) {
+    mainApi
+      .authorize(email, password)
+      .then((res) => {
+        localStorage.setItem("jwt", res.token);
+        setIsLoggedIn(true);
+        setEmail(email);
+        history.push("/");
       })
-      .finally(() => {
-        setIsPreloaderShowing(false);
-      })
+      .catch((err) => {
+        if (err.status === 400) {
+          console.log("400 - не передано одно из полей");
+        } else if (err.status === 401) {
+          console.log("401 - пользователь с email не найден ");
+        }
+        return console.log("Error: 500");
+      });
+  }
+  
+  function handleLogout() {
+    localStorage.removeItem("jwt");
+    setIsLoggedIn(false);
+    history.push("/sign-in");
   }
 
   function handleUpdateUser({ name, email }) {
@@ -112,7 +127,7 @@ function App() {
       .then((res) => {
         const { name, email, _id } = res;
         setCurrentUser({ name, email, _id });
-        setIsLogedIn(true);
+        setIsLoggedIn(true);
         (location.pathname === "/signin" || location.pathname === "/signup") ? history.push("/movies") : history.push(location.pathname);
       })
       .catch((err) => {
@@ -236,28 +251,36 @@ function App() {
   }
 
   useEffect(() => {
-    if (isLogedIn) {
+    if (isLoggedIn) {
       handleGetSavedMovies();
       isMoviesDownloaded();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLogedIn]);
+  }, [isLoggedIn]);
 
   useEffect(() => {
+    handleCheckToken();
     getCurrentUser();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+/*
+  useEffect(() => {
+    handleCheckToken();
+    Promise.all([mainApi.getCurrentUser(), mainApi.setSavedMovies()])
+      .catch((err) => console.log(err));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  */
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <Switch>
           <Route exact path="/">
-            <Header place="landing" isLogedIn={isLogedIn} />
+            <Header place="landing" email={email} isLogedIn={isLoggedIn} />
             <Main />
           </Route>
-          <ProtectedRoute path="/movies" isLogedIn={isLogedIn}>
-            <Header place="movies" isLogedIn={isLogedIn}/>
+          <ProtectedRoute path="/movies" isLogedIn={isLoggedIn}>
+            <Header place="movies" isLogedIn={isLoggedIn}/>
             <Movies
               handleSearchByQuery={handleSearchByQuery}
               downloadedMovies={downloadedMovies}
@@ -273,8 +296,8 @@ function App() {
               setIsPreloaderShowing={setIsPreloaderShowing}
             />
           </ProtectedRoute>
-          <ProtectedRoute path="/saved-movies" isLogedIn={isLogedIn}>
-            <Header place="saved-movies" isLogedIn={isLogedIn}/>
+          <ProtectedRoute path="/saved-movies" isLogedIn={isLoggedIn}>
+            <Header place="saved-movies" isLogedIn={isLoggedIn}/>
             <SavedMovies
               handleSearchByQuery={handleSearchByQuery}
               downloadedMovies={downloadedMovies}
@@ -290,8 +313,8 @@ function App() {
               setIsPreloaderShowing={setIsPreloaderShowing}
             />
           </ProtectedRoute>
-          <ProtectedRoute path="/profile" isLogedIn={isLogedIn}>
-            <Header place="profile" isLogedIn={isLogedIn}/>
+          <ProtectedRoute path="/profile" isLogedIn={isLoggedIn}>
+            <Header place="profile" isLogedIn={isLoggedIn}/>
             <Profile
               onLogout={handleLogout}
               onUpdate={handleUpdateUser}

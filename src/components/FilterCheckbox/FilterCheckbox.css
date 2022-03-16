@@ -23,6 +23,10 @@
   display: block;
 }
 
+.filter-checkbox__checkbox {
+  display: none;
+}
+
 .filter-checkbox__slider:before {
   position: absolute;
   content: '';

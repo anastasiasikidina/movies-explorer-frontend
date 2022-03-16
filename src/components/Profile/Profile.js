@@ -25,7 +25,7 @@ function Profile({ onLogout, onUpdate, setIsSuccessMessageShowing }) {
   }
 
   return (
-    <section className="profile" noValidate onSubmit={handleSubmitForm}>
+    <form className="profile" noValidate onSubmit={handleSubmitForm}>
       <h2 className="profile__title">Привет, {currentUser.name}</h2>
       <div className="profile__input-container">
         <label className="profile__label" htmlFor="profileName">
@@ -35,11 +35,12 @@ function Profile({ onLogout, onUpdate, setIsSuccessMessageShowing }) {
           className="profile__input"
           id="profileName"
           type="text"
-          placeholder="Анастасья"
+          name="name"
+          pattern={regex.name}
+          value={values.name || name}
           minLength="2"
           maxLength="30"
           disabled=""
-          required
           onChange={(e) => {
             handleChange(e);
             setName(e.target.value);
@@ -54,11 +55,8 @@ function Profile({ onLogout, onUpdate, setIsSuccessMessageShowing }) {
         <input
           className="profile__input"
           id="profileEmail"
-          type="text"
-          placeholder="pochta@yandex.ru"
-          minLength="2"
-          maxLength="30"
-          required
+          type="email"
+          name="email"
           pattern={regex.email}
           value={email}
           onChange={(e) => {
@@ -82,7 +80,6 @@ function Profile({ onLogout, onUpdate, setIsSuccessMessageShowing }) {
           currentUser.email === values.email
         }
       >
-        {" "}
         Редактировать
       </button>
       <button
@@ -92,7 +89,7 @@ function Profile({ onLogout, onUpdate, setIsSuccessMessageShowing }) {
       >
         Выйти из аккаунта
       </button>
-    </section>
+    </form>
   );
 }
 

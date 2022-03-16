@@ -12,13 +12,13 @@ function SavedMovies({ isMoviesShort, setIsMoviesShort, handleSearchByQuery, dow
 
   useEffect(() => {
     handleMoviesSearch();
-  }, [handleMoviesSearch, searchQuery]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
 
   useEffect(() => {
     setFindedMovies(savedMovies);
   }, [savedMovies]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   function handleMoviesSearch() {
     if (searchQuery) {
       setFindedMovies(handleSearchByQuery(savedMovies, searchQuery));
