@@ -1,10 +1,10 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 
-function ProtectedRoute({ path, isLogedIn, children, ...props }) {
+function ProtectedRoute({ path, isLoggedIn, children, ...props }) {
   return (
     <Route path={path}>
-      {!isLogedIn && <Redirect to="/"/>}
+      {!isLoggedIn && <Redirect to="/"/>}
       {children}
     </Route>
   );

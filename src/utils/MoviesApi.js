@@ -1,4 +1,3 @@
-/*
 class MoviesApi {
   constructor ({ baseUrl, headers }) {
     this._baseUrl = baseUrl;
@@ -33,7 +32,7 @@ const moviesApi = new MoviesApi({
 });
 
 export default moviesApi;
-*/
+/*
 
 import { BASE_MOVIES_URL } from '../utils/constants';
 
@@ -76,4 +75,4 @@ const moviesApi = new MoviesApi({
   headers: basicHeaders,
 });
 
-export default moviesApi;
+export default moviesApi;*/
