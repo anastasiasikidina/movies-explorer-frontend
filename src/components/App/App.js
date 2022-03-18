@@ -4,12 +4,12 @@ import {
   Switch,
   useRouteMatch,
   useHistory,
-  useLocation,
+ // useLocation,
 } from "react-router-dom";
 import {
   EXIST_FOOTER_FOR_PAGE,
   SERVER_IMAGE_URL,
-  SHORT_DURATION, // YOU_SUCCESS_REGISTER,
+  SHORT_DURATION, YOU_SUCCESS_REGISTER,
   NEW_CURRENTUSER_DATA_SUCCESS,
 } from "../../utils/constants";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
@@ -49,7 +49,7 @@ function App() {
   const [email, setEmail] = useState("");
 
   const history = useHistory();
-  const location = useLocation();
+  //const location = useLocation();
 
   function handleCheckToken() {
     const jwt = localStorage.getItem("jwt");
@@ -70,13 +70,14 @@ function App() {
     }
   }
 
-  function handleRegister(email, password) {
+  function handleRegister(email, password, name) {
     mainApi
-      .register(email, password)
+      .register(email, password, name)
       .then((res) => {
         setIsInfoTooltipOpen(true);
         setIsResponseSuccessful(true);
-        history.push("/sign-in");
+        setInfoTooltipMessage(YOU_SUCCESS_REGISTER);
+        handleLogin(email, password);
       })
       .catch((err) => {
         if (err.status === 400) {
@@ -88,6 +89,7 @@ function App() {
   }
 
   function handleLogin(email, password) {
+    setIsPreloaderShowing(true);
     mainApi
       .authorize(email, password)
       .then((res) => {
@@ -103,13 +105,16 @@ function App() {
           console.log("401 - пользователь с email не найден ");
         }
         return console.log("Error: 500");
-      });
+      })
+      .finally(() => {
+        setIsPreloaderShowing(false);
+      })
   }
 
   function handleLogout() {
     localStorage.removeItem("jwt");
     setIsLoggedIn(false);
-    history.push("/sign-in");
+    history.push("/");
   }
 
   function handleUpdateUser({ name, email }) {
@@ -137,13 +142,9 @@ function App() {
   function getCurrentUser() {
     mainApi
       .getCurrentUser()
-      .then((res) => {
-        const { name, email, _id } = res;
-        setCurrentUser({ name, email, _id });
-        setIsLoggedIn(true);
-        location.pathname === "/signin" || location.pathname === "/signup"
-          ? history.push("/movies")
-          : history.push(location.pathname);
+      .then((data) => {
+        localStorage.setItem('userData', JSON.stringify(data.data));
+        setCurrentUser(data.data);
       })
       .catch((err) => {
         console.log(err);
@@ -308,6 +309,20 @@ function App() {
             <Header place="landing" email={email} isLogedIn={isLoggedIn} />
             <Main />
           </Route>
+
+          <Route path="/signup">
+            <Register
+              onSubmit={handleRegister}
+              isPreloaderShowing={isPreloaderShowing}
+            />
+          </Route>
+          <Route path="/signin">
+            <Login
+              onSubmit={handleLogin}
+              isPreloaderShowing={isPreloaderShowing}
+            />
+          </Route>
+
           <ProtectedRoute path="/movies" isLogedIn={isLoggedIn}>
             <Header place="movies" isLogedIn={isLoggedIn} />
             <Movies
@@ -351,21 +366,11 @@ function App() {
               setIsSuccessMessageShowing={setIsSuccessMessageShowing}
             />
           </ProtectedRoute>
-          <Route path="/signup">
-            <Register
-              onSubmit={handleRegister}
-              isPreloaderShowing={isPreloaderShowing}
-            />
-          </Route>
-          <Route path="/signin">
-            <Login
-              onSubmit={handleLogin}
-              isPreloaderShowing={isPreloaderShowing}
-            />
-          </Route>
+
           <Route path="*">
             <NotFound />
           </Route>
+
         </Switch>
         {useRouteMatch(EXIST_FOOTER_FOR_PAGE) ? null : <Footer />}
         <InfoTooltip
