@@ -3,7 +3,7 @@ import AuthForm from "../AuthForm/AuthForm";
 import useFormValidator from "../../hooks/formValidation";
 import { regex } from "../../utils/constants";
 
-function Register({ signUp, isPreloaderShowing }) {
+function Register({ onSubmit, isPreloaderShowing }) {
   const useFormValidation = useFormValidator();
   const { name, email, password } = useFormValidation.values;
   const { values, errors, isFormValid, resetForm } = useFormValidation;
@@ -14,7 +14,7 @@ function Register({ signUp, isPreloaderShowing }) {
 
   function handleSubmit(evt) {
     evt.preventDefault();
-    signUp({ name, email, password });
+    onSubmit({ name, email, password });
   }
 
   return (
