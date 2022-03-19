@@ -1,12 +1,12 @@
 class MainApi {
-  constructor ({ baseUrl, headers }) {
+  constructor({ baseUrl, headers }) {
     this._baseUrl = baseUrl;
     this._headers = headers;
   }
 
   setToken(token) {
     this._headers = {
-      ...basicHeaders,
+      ...this._headers,
       Authorization: `Bearer ${token}`,
     };
   }
@@ -17,10 +17,10 @@ class MainApi {
 
   checkToken(jwt) {
     return fetch(`${this._baseUrl}/users/me`, {
-      method: 'GET',
+      method: "GET",
       headers: {
         ...this._headers,
-        Accept: 'application/json',
+        Accept: "application/json",
         Authorization: `Bearer ${jwt}`,
       },
     }).then(handleOriginalResponse);
@@ -34,9 +34,8 @@ class MainApi {
         name,
         password,
         email,
-      })
-    })
-    .then(handleOriginalResponse);
+      }),
+    }).then(handleOriginalResponse);
   }
 
   authorize({ email, password }) {
@@ -47,70 +46,51 @@ class MainApi {
       body: JSON.stringify({
         email,
         password,
-      })
-    })
-    .then(handleOriginalResponse);
+      }),
+    }).then(handleOriginalResponse);
   }
 
   getCurrentUser() {
-    return fetch(`${this._baseUrl}/users/me`, { headers: this._headers }).then(
+    return fetch(`${this._baseUrl}/users/me`, { 
+      headers: this._headers,
+      credentials: "include", 
+    }).then(
       handleOriginalResponse
     );
   }
 
-  updateCurrentUser(email, name) {
+  updateCurrentUser(data) {
     return fetch(`${this._baseUrl}/users/me`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: this._headers,
-      body: JSON.stringify({
-        email: email,
-        name: name,
-      }),
+      credentials: "include",
+      body: JSON.stringify(data),
     }).then(handleOriginalResponse);
   }
 
   getSavedMovies() {
-    return fetch(`${this._baseUrl}/movies`, { headers: this._headers }).then(
+    return fetch(`${this._baseUrl}/movies`, { 
+      headers: this._headers,
+      credentials: "include", 
+    })
+    .then(
       handleOriginalResponse
     );
   }
 
-  setSavedMovie(
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailer,
-    thumbnail,
-    movieId,
-    nameRU,
-    nameEN
-  ) {
+  setSavedMovie(movie) {
     return fetch(`${this._baseUrl}/movies`, {
       method: 'POST',
       headers: this._headers,
-      body: JSON.stringify({
-        country: country,
-        director: director,
-        duration: duration,
-        year: year,
-        description: description,
-        image: image,
-        trailer: trailer,
-        thumbnail: thumbnail,
-        movieId: movieId,
-        nameRU: nameRU,
-        nameEN: nameEN,
-      }),
+      body: JSON.stringify(movie),
     }).then(handleOriginalResponse);
   }
 
-  deleteSavedMovie(_id) {
-    return fetch(`${this._baseUrl}/movies/${_id}`, {
-      method: 'DELETE',
+  deleteSavedMovie(movie) {
+    return fetch(`${this._baseUrl}/movies/${movie._id}`, {
+      method: "DELETE",
       headers: this._headers,
+      credentials: "include",
     }).then(handleOriginalResponse);
   }
 
@@ -119,8 +99,7 @@ class MainApi {
       method: "GET",
       headers: this._headers,
       credentials: "include",
-    })
-    .then(handleOriginalResponse);
+    }).then(handleOriginalResponse);
   }
 }
 
@@ -132,16 +111,16 @@ const handleOriginalResponse = (res) => {
 
   res
     .json()
-    .then((result) => console.log('AuthApi error:', result))
-    .catch((err) => console.log('AuthApi error:', err));
+    .then((result) => console.log("AuthApi error:", result))
+    .catch((err) => console.log("AuthApi error:", err));
 
   return Promise.reject(res);
 };
 
 const basicHeaders = {
-  'Content-Type': 'application/json',
-  'User-agent':
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+  "Content-Type": "application/json",
+  "User-agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
 };
 
 const mainApi = new MainApi({

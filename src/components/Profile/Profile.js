@@ -14,9 +14,11 @@ function Profile({ onLogout, onUpdate, setIsSuccessMessageShowing }) {
   function handleSubmitForm(evt) {
     evt.preventDefault();
     if (
-      isFormValid ||
-      currentUser.name === values.name ||
-      currentUser.email === values.email
+      isFormValid &&
+      (
+      currentUser.name !== values.name ||
+      currentUser.email !== values.email
+      )
     ) {
       onUpdate({ name, email });
       resetForm();

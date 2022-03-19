@@ -29,20 +29,14 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    JSON.parse(localStorage.getItem("userData")) || null
-  );
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [isSuccessMessageShowing, setIsSuccessMessageShowing] = useState(false);
   const [isPreloaderShowing, setIsPreloaderShowing] = useState(false);
   const [downloadedMovies, setDownloadedMovies] = useState([]);
   const [isMoviesShort, setIsMoviesShort] = useState(false);
   const [savedMovies, setSavedMovies] = useState([]);
-  
-  /*(
-    JSON.parse(localStorage.getItem("allMovies")) || null
-  );*/
-
+ 
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [isResponseSuccessful, setIsResponseSuccessful] = useState();
   const [infoTooltipMessage, setInfoTooltipMessage] = useState("");
@@ -57,9 +51,12 @@ function App() {
       mainApi
         .checkToken(jwt)
         .then((res) => {
-          setIsLoggedIn(true);
+          mainApi.checkToken(jwt);
           setEmail(res.data.email);
           history.push("/");
+          localStorage.setItem('userData', JSON.stringify(res.data));
+          setCurrentUser(res.data);     
+          setIsLoggedIn(true);
         })
         .catch((err) => {
           if (err.status === 401) {
@@ -94,9 +91,11 @@ function App() {
       .authorize(email, password)
       .then((res) => {
         localStorage.setItem("jwt", res.token);
-        setIsLoggedIn(true);
+        mainApi.setToken(res.token); 
         setEmail(email);
         history.push("/");
+        setIsLoggedIn(true);
+
       })
       .catch((err) => {
         if (err.status === 400) {
@@ -123,7 +122,7 @@ function App() {
     mainApi
       .updateCurrentUser({ name, email })
       .then(() => {
-        setCurrentUser({ name, email });
+        setCurrentUser((prevUser) => ( { ...prevUser, name, email }));
         setIsInfoTooltipOpen(true);
         setInfoTooltipMessage(NEW_CURRENTUSER_DATA_SUCCESS);
         setIsResponseSuccessful(true);
@@ -138,19 +137,21 @@ function App() {
         setIsPreloaderShowing(false);
       });
   }
-
+/*
   function getCurrentUser() {
     mainApi
-      .getCurrentUser()
-      .then((data) => {
-        localStorage.setItem('userData', JSON.stringify(data.data));
-        setCurrentUser(data.data);
+    .getCurrentUser()
+      .then((res) => {
+        const { name, email, _id } = res;
+        setCurrentUser({ name, email, _id });
+        setIsLoggedIn(true);
+        (location.pathname === "/signin" || location.pathname === "/signup") ? history.push("/movies") : history.push(location.pathname);
       })
       .catch((err) => {
         console.log(err);
-      });
+      })
   }
-
+*/
   const isMoviesDownloaded = useCallback(() => {
     const localMovies = localStorage.getItem("localMovies");
     if (localMovies) {
@@ -215,7 +216,7 @@ function App() {
       .getSavedMovies()
       .then((movies) => {
         setSavedMovies(
-          movies
+          movies.data
             .slice()
             .reverse()
             .filter((item) => item.owner === currentUser._id)
@@ -233,7 +234,7 @@ function App() {
     mainApi
       .setSavedMovie(movie)
       .then((savedMovie) => {
-        setSavedMovies([savedMovie, ...savedMovies]);
+        setSavedMovies([savedMovie.data, ...savedMovies]);
       })
       .catch((err) => {
         console.log(err);
@@ -290,13 +291,12 @@ function App() {
 
   useEffect(() => {
     handleCheckToken();
-    getCurrentUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   /*
   useEffect(() => {
     handleCheckToken();
-    Promise.all([mainApi.getCurrentUser(), mainApi.setSavedMovies()])
+    Promise.all([mainApi.getCurrentUser(), mainApi.setSavedMovie()])
       .catch((err) => console.log(err));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

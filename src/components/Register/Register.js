@@ -74,7 +74,7 @@ function Register({ onSubmit, isPreloaderShowing }) {
         name="password"
         type="password"
         id="password"
-        minLength="5"
+        minLength="8"
         maxLength="22"
         placeholder="введите пароль"
         value={values.password || ""}
