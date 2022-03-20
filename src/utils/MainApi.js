@@ -51,34 +51,28 @@ class MainApi {
   }
 
   getCurrentUser() {
-    return fetch(`${this._baseUrl}/users/me`, { 
-      headers: this._headers,
-      credentials: "include", 
-    }).then(
+    return fetch(`${this._baseUrl}/users/me`, { headers: this._headers }).then(
       handleOriginalResponse
     );
   }
 
   updateCurrentUser(data) {
     return fetch(`${this._baseUrl}/users/me`, {
-      method: "PATCH",
+      method: 'PATCH',
       headers: this._headers,
-      credentials: "include",
       body: JSON.stringify(data),
     }).then(handleOriginalResponse);
   }
 
   getSavedMovies() {
-    return fetch(`${this._baseUrl}/movies`, { 
-      headers: this._headers,
-      credentials: "include", 
-    })
-    .then(
+    return fetch(`${this._baseUrl}/movies`, { headers: this._headers }).then(
       handleOriginalResponse
     );
   }
 
-  setSavedMovie(movie) {
+  setSavedMovie(
+    movie
+  ) {
     return fetch(`${this._baseUrl}/movies`, {
       method: 'POST',
       headers: this._headers,
@@ -88,9 +82,8 @@ class MainApi {
 
   deleteSavedMovie(movie) {
     return fetch(`${this._baseUrl}/movies/${movie._id}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: this._headers,
-      credentials: "include",
     }).then(handleOriginalResponse);
   }
 

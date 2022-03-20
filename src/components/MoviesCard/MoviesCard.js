@@ -18,7 +18,7 @@ function MoviesCard({
 
   const handleMarkMovieCard = () => {
     setIsMarked(!isMarked);
-    handleSaveMovie(movie);
+    handleMarkedMovie(movie);
   };
 
   useEffect(() => {

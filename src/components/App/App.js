@@ -49,14 +49,14 @@ function App() {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
       mainApi
-        .checkToken(jwt)
-        .then((res) => {
-          mainApi.checkToken(jwt);
-          setEmail(res.data.email);
-          history.push("/");
-          localStorage.setItem('userData', JSON.stringify(res.data));
-          setCurrentUser(res.data);     
-          setIsLoggedIn(true);
+      .checkToken(jwt)
+      .then((res) => {
+        mainApi.setToken(jwt);
+        setEmail(res.data.email);
+        history.push("/");
+        localStorage.setItem('userData', JSON.stringify(res.data));
+        setCurrentUser(res.data);
+        setIsLoggedIn(true);
         })
         .catch((err) => {
           if (err.status === 401) {
@@ -122,7 +122,7 @@ function App() {
     mainApi
       .updateCurrentUser({ name, email })
       .then(() => {
-        setCurrentUser((prevUser) => ( { ...prevUser, name, email }));
+        setCurrentUser((prevUser) => ({ ...prevUser, name, email }));
         setIsInfoTooltipOpen(true);
         setInfoTooltipMessage(NEW_CURRENTUSER_DATA_SUCCESS);
         setIsResponseSuccessful(true);
@@ -137,21 +137,7 @@ function App() {
         setIsPreloaderShowing(false);
       });
   }
-/*
-  function getCurrentUser() {
-    mainApi
-    .getCurrentUser()
-      .then((res) => {
-        const { name, email, _id } = res;
-        setCurrentUser({ name, email, _id });
-        setIsLoggedIn(true);
-        (location.pathname === "/signin" || location.pathname === "/signup") ? history.push("/movies") : history.push(location.pathname);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-  }
-*/
+
   const isMoviesDownloaded = useCallback(() => {
     const localMovies = localStorage.getItem("localMovies");
     if (localMovies) {
