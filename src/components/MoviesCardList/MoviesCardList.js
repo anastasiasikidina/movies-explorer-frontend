@@ -76,7 +76,7 @@ function MoviesCardList({ locationPathname, searchQuery, isMoviesShort, filterSh
         setMoviesErrorMessage(" ");
     }
   }, [isMoviesShort, location.pathname, moviesErrorMessage, renderMovies.length, searchQuery, setMoviesErrorMessage]);
-
+  
   return (
     <Switch>
       <Route path="/movies">

@@ -31,7 +31,7 @@ function Navigation({ place, isLoggedIn }) {
           </Link>
         </li>
         <li className="navigation__films-element">
-          <Link
+          <Link              
             to="/saved-movies"
             className={`navigation__link ${
               place === "saved-movies" ? "navigation__link_active" : ""

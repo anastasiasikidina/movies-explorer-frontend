@@ -102,6 +102,7 @@ function App() {
         mainApi.setToken(res.token);
         setEmail(email);
         history.push("/movies");
+        window.location.reload();
         setIsLoggedIn(true);
       })
       .then(() => {
