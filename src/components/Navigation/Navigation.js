@@ -4,7 +4,7 @@ import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import Logo from "../../images/logo-header.svg";
 import Menu from "../Menu/Menu";
 
-function Navigation({ place, isLogedIn }) {
+function Navigation({ place, isLoggedIn }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const handleMobileMenuOpen = () => setIsMobileMenuOpen(true);
   const onMobileMenuClose = () => setIsMobileMenuOpen(false);
@@ -17,7 +17,7 @@ function Navigation({ place, isLogedIn }) {
 
       <ul
         className={`navigation__films ${
-          !isLogedIn ? "navigation__films_hidden" : ""
+          !isLoggedIn ? "navigation__films_hidden" : ""
         }`}
       >
         <li className="navigation__films-element">
@@ -44,7 +44,7 @@ function Navigation({ place, isLogedIn }) {
       <Link
         to="/profile"
         className={`navigation__profile-edit navigation__profile-edit_place_header ${
-          place === "landing" ? "navigation__profile-edit_hidden" : ""
+          !isLoggedIn ? "navigation__profile-edit_hidden" : ""
         }`}
       >
         <span className="navigation__profile-text">Аккаунт</span>
@@ -55,7 +55,7 @@ function Navigation({ place, isLogedIn }) {
 
       <div
         className={`navigation__login ${
-          isLogedIn ? "navigation__login_hidden" : ""
+          isLoggedIn ? "navigation__login_hidden" : ""
         }`}
       >
         <Link to="/signup" className="navigation__login-element">
@@ -67,7 +67,7 @@ function Navigation({ place, isLogedIn }) {
       </div>
       <button
         className={`navigation__burger-button ${
-          isMobileMenuOpen || !isLogedIn
+          isMobileMenuOpen || !isLoggedIn
             ? "navigation__burger-button_hidden"
             : ""
         }`}

@@ -4,12 +4,13 @@ import {
   Switch,
   useRouteMatch,
   useHistory,
- // useLocation,
+  // useLocation,
 } from "react-router-dom";
 import {
   EXIST_FOOTER_FOR_PAGE,
   SERVER_IMAGE_URL,
-  SHORT_DURATION, YOU_SUCCESS_REGISTER,
+  SHORT_DURATION,
+  YOU_SUCCESS_REGISTER,
   NEW_CURRENTUSER_DATA_SUCCESS,
 } from "../../utils/constants";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
@@ -36,7 +37,7 @@ function App() {
   const [downloadedMovies, setDownloadedMovies] = useState([]);
   const [isMoviesShort, setIsMoviesShort] = useState(false);
   const [savedMovies, setSavedMovies] = useState([]);
- 
+
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [isResponseSuccessful, setIsResponseSuccessful] = useState();
   const [infoTooltipMessage, setInfoTooltipMessage] = useState("");
@@ -49,14 +50,14 @@ function App() {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
       mainApi
-      .checkToken(jwt)
-      .then((res) => {
-        mainApi.setToken(jwt);
-        setEmail(res.data.email);
-        history.push("/");
-        localStorage.setItem('userData', JSON.stringify(res.data));
-        setCurrentUser(res.data);
-        setIsLoggedIn(true);
+        .checkToken(jwt)
+        .then((res) => {
+          mainApi.setToken(jwt);
+          setEmail(res.data.email);
+          //history.push("/");
+          localStorage.setItem("userData", JSON.stringify(res.data));
+          setCurrentUser(res.data);
+          setIsLoggedIn(true);
         })
         .catch((err) => {
           if (err.status === 401) {
@@ -75,6 +76,7 @@ function App() {
         setIsResponseSuccessful(true);
         setInfoTooltipMessage(YOU_SUCCESS_REGISTER);
         handleLogin(email, password);
+        history.push("/movies");
       })
       .catch((err) => {
         if (err.status === 400) {
@@ -91,11 +93,13 @@ function App() {
       .authorize(email, password)
       .then((res) => {
         localStorage.setItem("jwt", res.token);
-        mainApi.setToken(res.token); 
+        mainApi.setToken(res.token);
         setEmail(email);
-        history.push("/");
+        history.push("/movies");
         setIsLoggedIn(true);
-
+      })
+      .then(() => {
+        loadUserData();
       })
       .catch((err) => {
         if (err.status === 400) {
@@ -107,13 +111,25 @@ function App() {
       })
       .finally(() => {
         setIsPreloaderShowing(false);
-      })
+      });
   }
 
   function handleLogout() {
     localStorage.removeItem("jwt");
     setIsLoggedIn(false);
     history.push("/");
+  }
+
+  function loadUserData() {
+    mainApi
+      .getCurrentUser()
+      .then((data) => {
+        localStorage.setItem('userData', JSON.stringify(data.data));
+        setCurrentUser(data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   function handleUpdateUser({ name, email }) {
@@ -146,7 +162,16 @@ function App() {
       handleGetMovies();
     }
   }, []);
-
+/*
+  function filterSavedMovies(movies) {
+    const myId = currentUser._id;
+    const myMovies = movies.filter((movie) => {
+      const { owner = '' } = movie;
+      return myId === owner;
+    });
+    return myMovies;
+  }
+*/
   function handleGetMovies() {
     moviesApi
       .getMovies()
@@ -245,7 +270,7 @@ function App() {
   }
 
   function checkIsMovieSaved(movie) {
-    const isSaved = savedMovies.some((item) => (item.movieId === movie.movieId));
+    const isSaved = savedMovies.some((item) => item.movieId === movie.movieId);
     return isSaved;
   }
 
@@ -266,6 +291,22 @@ function App() {
     setInfoTooltipMessage("");
     setIsResponseSuccessful();
   }
+/*
+  useEffect(() => {
+    if (currentUser) {
+      setIsPreloaderShowing(true);
+      mainApi
+        .getSavedMovies()
+        .then((data) => {
+          setSavedMovies(filterSavedMovies(data.data));
+          setIsPreloaderShowing(false);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);*/
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -292,7 +333,7 @@ function App() {
       <div className="page">
         <Switch>
           <Route exact path="/">
-            <Header place="landing" email={email} isLogedIn={isLoggedIn} />
+            <Header place="landing" email={email} isLoggedIn={isLoggedIn} />
             <Main />
           </Route>
 
@@ -308,9 +349,25 @@ function App() {
               isPreloaderShowing={isPreloaderShowing}
             />
           </Route>
+          <ProtectedRoute
+            path="/profile"
+            redirectTo="/profile"
+            isLoggedIn={isLoggedIn}
+          >
+            <Header place="profile" isLoggedIn={isLoggedIn} />
+            <Profile
+              onLogout={handleLogout}
+              onUpdate={handleUpdateUser}
+              isSuccessMessageShowing={isSuccessMessageShowing}
+              setIsSuccessMessageShowing={setIsSuccessMessageShowing}
+            />
+          </ProtectedRoute>
 
-          <ProtectedRoute path="/movies" isLogedIn={isLoggedIn}>
-            <Header place="movies" isLogedIn={isLoggedIn} />
+          <ProtectedRoute 
+            path="/movies"
+            redirectTo='/movies'
+            isLoggedIn={isLoggedIn}>
+            <Header place="movies" isLoggedIn={isLoggedIn} />
             <Movies
               handleSearchByQuery={handleSearchByQuery}
               downloadedMovies={downloadedMovies}
@@ -326,8 +383,12 @@ function App() {
               setIsPreloaderShowing={setIsPreloaderShowing}
             />
           </ProtectedRoute>
-          <ProtectedRoute path="/saved-movies" isLogedIn={isLoggedIn}>
-            <Header place="saved-movies" isLogedIn={isLoggedIn} />
+
+          <ProtectedRoute 
+            path="/saved-movies"
+            redirectTo='/saved-movies' 
+            isLoggedIn={isLoggedIn}>
+            <Header place="saved-movies" isLoggedIn={isLoggedIn} />
             <SavedMovies
               handleSearchByQuery={handleSearchByQuery}
               downloadedMovies={downloadedMovies}
@@ -343,20 +404,10 @@ function App() {
               setIsPreloaderShowing={setIsPreloaderShowing}
             />
           </ProtectedRoute>
-          <ProtectedRoute path="/profile" isLogedIn={isLoggedIn}>
-            <Header place="profile" isLogedIn={isLoggedIn} />
-            <Profile
-              onLogout={handleLogout}
-              onUpdate={handleUpdateUser}
-              isSuccessMessageShowing={isSuccessMessageShowing}
-              setIsSuccessMessageShowing={setIsSuccessMessageShowing}
-            />
-          </ProtectedRoute>
 
           <Route path="*">
             <NotFound />
           </Route>
-
         </Switch>
         {useRouteMatch(EXIST_FOOTER_FOR_PAGE) ? null : <Footer />}
         <InfoTooltip
