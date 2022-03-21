@@ -69,6 +69,8 @@ function App() {
   }
 
   function handleRegister(email, password, name) {
+    clearInfoTooltip();
+    setIsPreloaderShowing(true);
     mainApi
       .register(email, password, name)
       .then((res) => {
@@ -84,7 +86,11 @@ function App() {
         }
         setIsInfoTooltipOpen(true);
         setIsResponseSuccessful(false);
-      });
+      })
+      .finally(() => {
+        setIsSuccessMessageShowing(true);
+        setIsPreloaderShowing(false);
+      })
   }
 
   function handleLogin(email, password) {
@@ -162,7 +168,7 @@ function App() {
       handleGetMovies();
     }
   }, []);
-/*
+
   function filterSavedMovies(movies) {
     const myId = currentUser._id;
     const myMovies = movies.filter((movie) => {
@@ -171,7 +177,7 @@ function App() {
     });
     return myMovies;
   }
-*/
+
   function handleGetMovies() {
     moviesApi
       .getMovies()
@@ -233,6 +239,14 @@ function App() {
             .filter((item) => item.owner === currentUser._id)
         );
       })
+      mainApi
+      .getSavedMovies()
+      .then((data) => {
+        return filterSavedMovies(data.data);
+      })
+      .then((myMovies) => {
+        setSavedMovies(myMovies);
+      })
       .catch((err) => {
         console.log(err);
       })
@@ -246,6 +260,14 @@ function App() {
       .setSavedMovie(movie)
       .then((savedMovie) => {
         setSavedMovies([savedMovie.data, ...savedMovies]);
+      })
+      mainApi
+      .getSavedMovies()
+      .then((data) => {
+        return filterSavedMovies(data.data);
+      })
+      .then((myMovies) => {
+        setSavedMovies(myMovies);
       })
       .catch((err) => {
         console.log(err);
@@ -263,7 +285,15 @@ function App() {
           (item) => item._id !== savedMovie._id
         );
         setSavedMovies(tempSavedMovies);
-      })
+      });
+      mainApi
+            .getSavedMovies()
+            .then((data) => {
+              return filterSavedMovies(data.data);
+            })
+            .then((myMovies) => {
+              setSavedMovies(myMovies);
+            })
       .catch((err) => {
         console.log(err);
       });
@@ -291,7 +321,7 @@ function App() {
     setInfoTooltipMessage("");
     setIsResponseSuccessful();
   }
-/*
+
   useEffect(() => {
     if (currentUser) {
       setIsPreloaderShowing(true);
@@ -306,11 +336,12 @@ function App() {
         });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser]);*/
+  }, [currentUser]);
 
   useEffect(() => {
     if (isLoggedIn) {
       handleGetSavedMovies();
+     //filterSavedMovies();
       isMoviesDownloaded();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -320,14 +351,7 @@ function App() {
     handleCheckToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  /*
-  useEffect(() => {
-    handleCheckToken();
-    Promise.all([mainApi.getCurrentUser(), mainApi.setSavedMovie()])
-      .catch((err) => console.log(err));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  */
+  
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
@@ -369,6 +393,8 @@ function App() {
             isLoggedIn={isLoggedIn}>
             <Header place="movies" isLoggedIn={isLoggedIn} />
             <Movies
+              isPreloaderShowing={isPreloaderShowing}
+              setIsPreloaderShowing={setIsPreloaderShowing}
               handleSearchByQuery={handleSearchByQuery}
               downloadedMovies={downloadedMovies}
               isMoviesShort={isMoviesShort}
@@ -379,8 +405,7 @@ function App() {
               handleMarkedMovie={handleMarkedMovie}
               savedMovies={savedMovies}
               checkIsMovieSaved={checkIsMovieSaved}
-              isPreloaderShowing={isPreloaderShowing}
-              setIsPreloaderShowing={setIsPreloaderShowing}
+              
             />
           </ProtectedRoute>
 
@@ -390,6 +415,8 @@ function App() {
             isLoggedIn={isLoggedIn}>
             <Header place="saved-movies" isLoggedIn={isLoggedIn} />
             <SavedMovies
+              isPreloaderShowing={isPreloaderShowing}
+              setIsPreloaderShowing={setIsPreloaderShowing}
               handleSearchByQuery={handleSearchByQuery}
               downloadedMovies={downloadedMovies}
               isMoviesShort={isMoviesShort}
@@ -400,8 +427,7 @@ function App() {
               handleMarkedMovie={handleMarkedMovie}
               savedMovies={savedMovies}
               checkIsMovieSaved={checkIsMovieSaved}
-              isPreloaderShowing={isPreloaderShowing}
-              setIsPreloaderShowing={setIsPreloaderShowing}
+              
             />
           </ProtectedRoute>
 

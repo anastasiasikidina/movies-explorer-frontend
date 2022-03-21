@@ -1,5 +1,4 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
 import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
 import useFormValidator from "../../hooks/formValidation";
 
@@ -9,11 +8,9 @@ function SearchForm({
   setIsMoviesShort,
   setIsPreloaderShowing,
 }) {
-  const lastQuery = localStorage.getItem("lastQuery");
   const useFormValidation = useFormValidator();
   const { searchValue } = useFormValidation.values;
   const { errors, isFormValid, resetForm } = useFormValidation;
-  const location = useLocation();
 
   React.useEffect(() => {
     resetForm();
@@ -39,9 +36,8 @@ function SearchForm({
             <input
               className="search-form__input"
               type="text"
-              placeholder={
-                location.pathname === "/movies" ? lastQuery || "Фильм" : "Фильм"
-              }
+              placeholder='Фильм'
+
               name="searchValue"
               id="searchValue"
               value={searchValue || ""}

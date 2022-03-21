@@ -54,7 +54,6 @@
 
 .search-form__input:focus {
   background-color: #f0f0f0;
-  outline: none;
 }
 
 .search-form__button {
