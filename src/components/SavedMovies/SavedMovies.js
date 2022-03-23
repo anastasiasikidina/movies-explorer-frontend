@@ -54,6 +54,5 @@ function SavedMovies({ isMoviesShort, setIsMoviesShort, handleSearchByQuery, dow
     </main>
   )
 }
-// eslint-disable-next-line no-restricted-globals
-//window.setTimeout(()=>{location.reload(1)},30000)
+
 export default SavedMovies;

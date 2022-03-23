@@ -29,7 +29,9 @@ import NotFound from "../NotFound/NotFound";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 
 function App() {
-  const [currentUser, setCurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState(
+    JSON.parse(localStorage.getItem('userData')) || null
+  );
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [isSuccessMessageShowing, setIsSuccessMessageShowing] = useState(false);
@@ -123,6 +125,7 @@ function App() {
 
   function handleLogout() {
     localStorage.removeItem("jwt");
+    setCurrentUser({});
     setIsLoggedIn(false);
     history.push("/");
   }
@@ -144,9 +147,9 @@ function App() {
     setIsPreloaderShowing(true);
     mainApi
       .updateCurrentUser({ name, email })
-      .then(() => {
-        setCurrentUser((prevUser) => ({ ...prevUser, name, email }));
-        setIsInfoTooltipOpen(true);
+      .then((data) => {
+        localStorage.setItem('userData', JSON.stringify(data.data));
+        setCurrentUser(data.data);
         setInfoTooltipMessage(NEW_CURRENTUSER_DATA_SUCCESS);
         setIsResponseSuccessful(true);
       })
