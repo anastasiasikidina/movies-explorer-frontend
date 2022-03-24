@@ -1,52 +1,54 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import SearchForm from "../SearchForm/SearchForm";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
-import MovieCardImage from "../../images/cardimage.svg";
 
-function SavedMovies() {
-
+function SavedMovies({ isMoviesShort, setIsMoviesShort, handleSearchByQuery, downloadedMovies,
+  savedMovies, filterShortMovies, checkIsMovieSaved, handleSaveMovie, handleDeleteMovie, handleMarkedMovie,
+  isPreloaderShowing, setIsPreloaderShowing }) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [findedMovies, setFindedMovies] = useState([]);
   let location = useLocation();
 
-  const MOVIES_CARD_LIST_DATA = [
-    {
-      id: 1,
-      title: "33 слова о дизайне",
-      subtitle: "1ч 47м",
-      imageAlt: "кадр из фильма",
-      imageSrc: MovieCardImage,
-      isMarked: false,
-      isShortFilm: true,
-    },
-    {
-      id: 2,
-      title: "33 слова о дизайне",
-      subtitle: "1ч 47м",
-      imageAlt: "кадр из фильма",
-      imageSrc: MovieCardImage,
-      isMarked: false,
-      isShortFilm: false,
-    },
-    {
-      id: 5,
-      title: "33 слова о дизайне",
-      subtitle: "1ч 47м",
-      imageAlt: "кадр из фильма",
-      imageSrc: MovieCardImage,
-      isMarked: false,
-      isShortFilm: false,
-    },
-  ];
+  useEffect(() => {
+    handleMoviesSearch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
 
-  const handleSubmit = (data) => {
-    console.log(data);
+  useEffect(() => {
+    setFindedMovies(savedMovies);
+  }, [savedMovies]);
+
+  function handleMoviesSearch() {
+    if (searchQuery) {
+      setFindedMovies(handleSearchByQuery(savedMovies, searchQuery));
+      setTimeout(() => setIsPreloaderShowing(false), 1500);
+    }
   }
 
   return (
     <main>
-      <SearchForm onSubmit={handleSubmit}/>
+      <SearchForm
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        isMoviesShort={isMoviesShort}
+        setIsMoviesShort={setIsMoviesShort}
+        setIsPreloaderShowing={setIsPreloaderShowing}
+      />
       <MoviesCardList
-        data={MOVIES_CARD_LIST_DATA}
+        searchQuery={searchQuery}
+        isMoviesShort={isMoviesShort}
+        filterShortMovies={filterShortMovies}
+        findedMovies={findedMovies}
+        setFindedMovies={setFindedMovies}
+        handleSearchByQuery={handleSearchByQuery}
+        downloadedMovies={downloadedMovies}
+        savedMovies={savedMovies}
+        checkIsMovieSaved={checkIsMovieSaved}
+        handleSaveMovie={handleSaveMovie}
+        handleDeleteMovie={handleDeleteMovie}
+        handleMarkedMovie={handleMarkedMovie}
+        isPreloaderShowing={isPreloaderShowing}
         locationPathname={location.pathname}
       />
     </main>

@@ -1,46 +1,73 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
+import useFormValidator from "../../hooks/formValidation";
 
-function SearchForm({ onSubmit }) {
-  const [error, setError] = React.useState();
-  const [inputValue, setInputValue] = React.useState();
+function SearchForm({
+  setSearchQuery,
+  isMoviesShort,
+  setIsMoviesShort,
+  setIsPreloaderShowing,
+  
+}) {
+  const useFormValidation = useFormValidator();
+  const { searchValue } = useFormValidation.values;
+  const { errors, isFormValid } = useFormValidation;
+  const location = useLocation();
+  const lastQuery = localStorage.getItem("lastQuery");
 
-  function handleChange(e) {
-    clearError();
-    setInputValue(e.target.value);
+/*
+  React.useEffect(() => {
+    resetForm();
+  }, [resetForm]);
+*/
+  function changeMoviesType(e) {
+    setIsMoviesShort(!isMoviesShort);
+    localStorage.setItem("isShortStatus", JSON.stringify(!isMoviesShort));
   }
 
-  function handleSearch(e) {
-    clearError();
-    e.preventDefault();
-
-    if (!inputValue) {
-      setError("Нужно ввести ключевое слово");
-    } else if (inputValue.length < 3) {
-      setError("Введите не менее трёх букв");
-    } else {
-      onSubmit(inputValue);
-    }
-  }
-
-  function clearError() {
-    setError(null);
+  function searchFormHandler(evt) {
+    evt.preventDefault();
+    setSearchQuery(searchValue);
+    setIsPreloaderShowing(true);
   }
 
   return (
     <div className="search-form">
       <div className="search-form__container">
         <div className="search-form__wrapper">
-          <div className="search-form__icon"/>
-          <form className="search-form__field">
-            <input className="search-form__input" type="text" placeholder="Фильм" onFocus={clearError} value={inputValue || ""} onChange={handleChange}/>
-            <button className="search-form__button" type="submit" onClick={handleSearch}></button>
+          <div className="search-form__icon" />
+          <form className="search-form__field" onSubmit={searchFormHandler}>
+            <input
+              className="search-form__input"
+              type="text"
+              placeholder={
+                location.pathname === "/movies" ? lastQuery || "Фильм" : "Фильм"
+              }
+              name="searchValue"
+              id="searchValue"
+              value={searchValue || ""}
+              onChange={useFormValidation.handleChange}
+              required
+            />
+            <button
+              className={`search-form__button ${
+                !isFormValid && "search-form__button_disabled"
+              }`}
+              type="submit"
+              disabled={!isFormValid}
+            ></button>
           </form>
           <div className="search-form__checkbox-wrapper">
-            <FilterCheckbox label="Короткометражки" />
+            <FilterCheckbox
+              label="Короткометражки"
+              isMoviesShort={isMoviesShort}
+              setIsMoviesShort={setIsMoviesShort}
+              changeMoviesType={changeMoviesType}
+            />
           </div>
         </div>
-        {error && <p className="search-form__error">{error}</p>}
+        <p className="search-form__error">{errors.searchValue}</p>
       </div>
     </div>
   );
