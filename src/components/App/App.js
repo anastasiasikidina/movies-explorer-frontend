@@ -125,7 +125,12 @@ function App() {
 
   function handleLogout() {
     localStorage.removeItem("jwt");
-    setCurrentUser({});
+    setCurrentUser(null);
+    localStorage.removeItem('userData');
+    localStorage.removeItem("localMovies");
+    localStorage.removeItem("lastQuery");
+    localStorage.removeItem('lastFilms');
+    localStorage.removeItem("isShortStatus");
     setIsLoggedIn(false);
     history.push("/");
   }

@@ -6,14 +6,18 @@ import SearchForm from "../SearchForm/SearchForm";
 function Movies({ isMoviesShort, setIsMoviesShort, filterShortMovies, handleSearchByQuery, downloadedMovies,
   savedMovies, checkIsMovieSaved, handleSaveMovie, handleDeleteMovie, handleMarkedMovie, isPreloaderShowing, setIsPreloaderShowing }) {
   let location = useLocation();
+ // const [searchQuery, setSearchQuery] = React.useState(localStorage.getItem("lastQuery"));  
   const [searchQuery, setSearchQuery] = React.useState("");
   const [isFirstRequest, setIsFirstRequest] = React.useState(true);
-  const [findedMovies, setFindedMovies] = React.useState([]);
+  
+  const [findedMovies, setFindedMovies] =  React.useState([]);
+  //useState(JSON.parse(localStorage.getItem('lastFilms')))
 
   const handleMoviesSearch = useCallback(() => {
     if (searchQuery.length > 0) {
         setFindedMovies(handleSearchByQuery(downloadedMovies, searchQuery));
         setIsFirstRequest(false);
+        localStorage.setItem('lastFilms', JSON.stringify(handleSearchByQuery(downloadedMovies, searchQuery)));
         localStorage.setItem("lastQuery", searchQuery);
     }
 

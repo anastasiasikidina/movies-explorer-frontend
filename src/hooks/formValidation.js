@@ -8,13 +8,16 @@ export default function useFormValidator() {
   const handleChange = (evt) => {
     const target = evt.target;
     const name = target.name;
-    const value = target.value;
+   // const value = target.value;
+   const value =
+            target.type === "checkbox" ? target.checked : target.value;
     setValues({...values, [name]: value});
     setErrors({...errors, [name]: target.validationMessage });
     setIsFormValid(target.closest("form").checkValidity());
   };
 
-  const resetForm = useCallback((restValues = {}, resetErrors = {}, resetIsFormValid = false) => {
+  const resetForm = useCallback(
+    (restValues = {}, resetErrors = {}, resetIsFormValid = false) => {
     setValues(restValues);
     setErrors(resetErrors);
     setIsFormValid(resetIsFormValid);

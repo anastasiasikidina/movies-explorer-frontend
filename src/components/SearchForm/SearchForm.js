@@ -1,4 +1,5 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
 import useFormValidator from "../../hooks/formValidation";
 
@@ -7,15 +8,19 @@ function SearchForm({
   isMoviesShort,
   setIsMoviesShort,
   setIsPreloaderShowing,
+  
 }) {
   const useFormValidation = useFormValidator();
   const { searchValue } = useFormValidation.values;
-  const { errors, isFormValid, resetForm } = useFormValidation;
+  const { errors, isFormValid } = useFormValidation;
+  const location = useLocation();
+  const lastQuery = localStorage.getItem("lastQuery");
 
+/*
   React.useEffect(() => {
     resetForm();
   }, [resetForm]);
-
+*/
   function changeMoviesType(e) {
     setIsMoviesShort(!isMoviesShort);
     localStorage.setItem("isShortStatus", JSON.stringify(!isMoviesShort));
@@ -36,8 +41,9 @@ function SearchForm({
             <input
               className="search-form__input"
               type="text"
-              placeholder='Фильм'
-
+              placeholder={
+                location.pathname === "/movies" ? lastQuery || "Фильм" : "Фильм"
+              }
               name="searchValue"
               id="searchValue"
               value={searchValue || ""}
